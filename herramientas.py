@@ -4,10 +4,10 @@ import shelve
 from pynput.keyboard import Key, Listener
 
 def on_press(key):
-    if key==Key.enter:
+    if key ==Key.shift:
         return False
 def esperar_enter():
-#Detecta cuando se presiona enter sin necesidad de que el programa esté en foco. Ignorará cualquier otra tecla
+#Detecta cuando se presiona la tecla shift sin necesidad de que el programa esté en foco. Ignorará cualquier otra tecla
     with Listener(on_press=on_press) as listener:
             listener.join()
 #La funcion muestra una captura
@@ -16,10 +16,10 @@ def esperar_enter():
 def medir_zona():
 # Permite delimitar una zona rectangular de la pantalla indicando dos esquinas, la superior izquierda y la inferior derecha. Retorna la región en formato diccionario
     zona={}
-    print("Ubique el puntero del mouse en la esquina superior izquierda y oprima enter")
+    print("Ubique el puntero del mouse en la esquina superior izquierda y oprima shift")
     esperar_enter()
     six, siy =pyautogui.position()
-    print("Ubique el puntero del mouse en la esquina inferior derecha y oprima enter")
+    print("Ubique el puntero del mouse en la esquina inferior derecha y oprima shift")
     esperar_enter()
     idx, idy =pyautogui.position()
     zona["ancho"] = abs(idx-six)
@@ -28,8 +28,7 @@ def medir_zona():
     zona["y"]=siy
     return (zona)
 
-    # captura = pyautogui.screenshot(region=zona)
-    # captura.show()
+    # 
     # nombre=input("\nSi quiere guardar la capura ingrese el nombre. De lo contrario presione enter ")
     # if nombre != "":
     #     nombre=nombre+".png"
@@ -52,6 +51,12 @@ def tomar_punto():
 
 def guardar_zona():
     zona=medir_zona()
+    tupla_zona= zona['x'], zona['y'], zona['ancho'], zona['alto']
+    print(f"Zona medida= {tupla_zona}\n")
+    mostrar=input("Quiere ver una imagen de la zona capturada? (s/n)")
+    if mostrar.lower()=='s':
+        captura = pyautogui.screenshot(region=tupla_zona)
+        captura.show()
 
 
 # punto = tomar_punto()
@@ -68,3 +73,4 @@ def guardar_zona():
 #     with shelve.open('zonas', 'c') as base_zona:
 #         base_zona[etiqueta] = zona
     
+guardar_zona()
