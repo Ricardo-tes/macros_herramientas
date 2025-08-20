@@ -4,7 +4,6 @@ import shelve
 from pynput.keyboard import Key, Listener
 
 def on_press(key):
-#Detecta cuando se presiona enter
     if key==Key.enter:
         return False
 
@@ -15,7 +14,7 @@ def tomar_zona():
 # del area seleccionada. Se puede guardar la captura o descartarla. Si el area es correcta para el usuario la retorna, sino retorna None. 
 #
     print("Ubique el puntero del mouse en la esquina superior izquierda y oprima enter")
-    with Listener(on_press=on_press) as listener:
+    with Listener(on_press=on_press) as listener: #Detecta cuando se presiona enter sin necesidad de que el programa esté en foco
         listener.join()
     six, siy =pyautogui.position()
     print("Ubique el puntero del mouse en la esquina inferior derecha y oprima enter")
