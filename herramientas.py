@@ -6,26 +6,30 @@ from pynput.keyboard import Key, Listener
 def on_press(key):
     if key ==Key.shift_l:
         return False
-def esperar_enter():
+def esperar_shift():
 #Detecta cuando se presiona la tecla shift izquierda sin necesidad de que el programa esté en foco. Ignorará cualquier otra tecla
     with Listener(on_press=on_press) as listener:
             listener.join()
-#La funcion muestra una captura
-# del area seleccionada. Se puede guardar la captura o descartarla. Si el area es correcta para el usuario la retorna, sino retorna None. 
+ 
+def medir_resolucion():
+#Lee la resolucion de la pantalla y devuelve un string de formato anchoXalto
+    ancho, alto = pyautogui.size()
+    return (str(ancho)+'X'+str(alto))
 
 def medir_zona():
 # Permite delimitar una zona rectangular de la pantalla indicando dos esquinas, la superior izquierda y la inferior derecha. Retorna la región en formato diccionario
     zona={}
     print("Ubique el puntero del mouse en la esquina superior izquierda y oprima shift izquierdo")
-    esperar_enter()
+    esperar_shift()
     six, siy =pyautogui.position()
     print("Ubique el puntero del mouse en la esquina inferior derecha y oprima shift izquierdo")
-    esperar_enter()
+    esperar_shift()
     idx, idy =pyautogui.position()
     zona["ancho"] = abs(idx-six)
     zona["alto"] = abs(idy-siy)
     zona["x"]=six
     zona["y"]=siy
+    zona["resolucion"]=medir_resolucion()
     return (zona)
 
     # 
@@ -41,30 +45,37 @@ def medir_zona():
     # else:
     #     return None
 
-def tomar_punto():
+def medir_punto():
 #Toma coordenas xy de un punto de la pantalla y lo retorna en formato cordenada x, cordenada y
-    print("\nPosicione el puntero donde quiera tomar la posicio y presione enter")
-    with Listener(on_press=on_press) as listener: #Detecta cuando se presiona enter sin necesidad de que el programa esté en foco
-        listener.join()
-    return (pyautogui.position())
+    punto={}
+    print("\nPosicione el puntero donde quiera tomar la posicio y presione shif izquierdo")
+    esperar_shift()
+    punto["x"], punto["y"] = pyautogui.position()
+    punto["resolucion"]=medir_resolucion()
+    return (punto)
 
 def guardar(cordenadas):
+#Almacena coordenadas, tanto zonas como puntos en un archivo csv
     fila={}
+    nombre_archivo = "datos.csv"
     nombre=input(f"Ingrese un nombre para guardar las coordenadas\n")
     descripcion=input(f"Ingrese una descripcion. Opcional\n")
     fila["nombre"]=nombre
     fila["descripcion"]=descripcion
     fila["x"]=cordenadas["x"]
     fila["y"]=cordenadas["y"]
-    if len(cordenadas)==4:
+    fila["resolucion"]=cordenadas["resolucion"]
+    if len(cordenadas)==5:
         fila["ancho"]=cordenadas["ancho"]
         fila["alto"]=cordenadas["alto"]
     else:
         fila["ancho"]=""
         fila["alto"]=""
-    columnas=["nombre", "descripcion", "x", "y", "ancho", "alto"]
-    with open ("datos.csv", 'a') as archivo:
+    columnas=["nombre", "descripcion", "x", "y", "ancho", "alto", "resolucion"]
+    with open (nombre_archivo, 'a') as archivo:
         csv_writer=csv.DictWriter(archivo, fieldnames=columnas)
+        if archivo.tell()==0:
+            csv_writer.writeheader()
         csv_writer.writerow(fila)
 
 def guardar_zona():
@@ -92,4 +103,12 @@ def guardar_zona():
 #     with shelve.open('zonas', 'c') as base_zona:
 #         base_zona[etiqueta] = zona
     
+def guardar_punto():
+    punto = medir_punto()
+    print(f"El punto medido es ({punto['x']}, {punto['y']})\n")
+    accion=input(f"Quiere guardar el punto? s/n\n")
+    if accion.lower()=='s':
+        guardar(punto)
+
+guardar_punto()
 guardar_zona()
