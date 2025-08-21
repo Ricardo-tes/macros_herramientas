@@ -1,6 +1,5 @@
 import pyautogui
 import csv
-#from PIL import Image
 from pynput.keyboard import Key, Listener
 
 def on_press(key):
@@ -32,18 +31,6 @@ def medir_zona():
     zona["resolucion"]=medir_resolucion()
     return (zona)
 
-    # 
-    # nombre=input("\nSi quiere guardar la capura ingrese el nombre. De lo contrario presione enter ")
-    # if nombre != "":
-    #     nombre=nombre+".png"
-    #     captura.save(nombre, "PNG")
-    # confirma=input("\nEl area delimitada es la correcta? s/n Enter ")
-    # if confirma.lower() =='s':
-
-        
-    #     return zona
-    # else:
-    #     return None
 
 def medir_punto():
 #Toma coordenas xy de un punto de la pantalla y lo retorna en formato cordenada x, cordenada y
@@ -89,20 +76,7 @@ def guardar_zona():
     accion = input(f"Quiere guardar las coordenadas de la zona marcada? s/n \n")
     if accion.lower()=='s':
         guardar(zona)
-# punto = tomar_punto()
-# if punto!= None:
-#     etiqueta = input("\nIngrese un nombre para etiquetar el punto a guardar ")
-#     with shelve.open('puntos', 'c') as puntos:
-#         puntos[etiqueta]=punto
-
  
-# zona = tomar_zona()
-# if zona != None:
-#     print(zona)
-#     etiqueta=input("\nIngrese nombre para etiquetar la zona guardada ")
-#     with shelve.open('zonas', 'c') as base_zona:
-#         base_zona[etiqueta] = zona
-    
 def guardar_punto():
     punto = medir_punto()
     print(f"El punto medido es ({punto['x']}, {punto['y']})\n")
@@ -110,5 +84,22 @@ def guardar_punto():
     if accion.lower()=='s':
         guardar(punto)
 
-guardar_punto()
-guardar_zona()
+def guardar_captura():
+    zona=medir_zona()
+    tupla_zona= zona['x'], zona['y'], zona['ancho'], zona['alto'] 
+    captura = pyautogui.screenshot(region=tupla_zona)
+    captura.show()
+    nombre=input(f"Si quiere guardar la capura ingrese el nombre, de lo contrario presione enter ")
+    if nombre != "":
+         nombre=nombre+".png"
+         captura.save(nombre, "PNG")
+
+
+def main():
+    menu=[guardar_punto, guardar_zona, guardar_captura]
+    elegir=input(f"\n1 Guardar punto\n2 Guardar zona\n3 Guardar captura\nCaulquier otro caracter para salir\n")
+    if elegir in "123":
+        menu[int(elegir)-1]()
+
+if __name__=="__main__":
+    main()
