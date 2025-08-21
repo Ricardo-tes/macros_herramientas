@@ -4,10 +4,10 @@ import shelve
 from pynput.keyboard import Key, Listener
 
 def on_press(key):
-    if key ==Key.shift:
+    if key ==Key.shift_l:
         return False
 def esperar_enter():
-#Detecta cuando se presiona la tecla shift sin necesidad de que el programa esté en foco. Ignorará cualquier otra tecla
+#Detecta cuando se presiona la tecla shift izquierda sin necesidad de que el programa esté en foco. Ignorará cualquier otra tecla
     with Listener(on_press=on_press) as listener:
             listener.join()
 #La funcion muestra una captura
@@ -16,10 +16,10 @@ def esperar_enter():
 def medir_zona():
 # Permite delimitar una zona rectangular de la pantalla indicando dos esquinas, la superior izquierda y la inferior derecha. Retorna la región en formato diccionario
     zona={}
-    print("Ubique el puntero del mouse en la esquina superior izquierda y oprima shift")
+    print("Ubique el puntero del mouse en la esquina superior izquierda y oprima shift izquierdo")
     esperar_enter()
     six, siy =pyautogui.position()
-    print("Ubique el puntero del mouse en la esquina inferior derecha y oprima shift")
+    print("Ubique el puntero del mouse en la esquina inferior derecha y oprima shift izquierdo")
     esperar_enter()
     idx, idy =pyautogui.position()
     zona["ancho"] = abs(idx-six)
@@ -48,17 +48,19 @@ def tomar_punto():
         listener.join()
     return (pyautogui.position())
 
-
+def guardar():
+    with open
 def guardar_zona():
     zona=medir_zona()
     tupla_zona= zona['x'], zona['y'], zona['ancho'], zona['alto']
-    print(f"Zona medida= {tupla_zona}\n")
-    mostrar=input("Quiere ver una imagen de la zona capturada? (s/n)")
-    if mostrar.lower()=='s':
+    accion=input(f"Quiere ver una imagen de la zona capturada? (s/n)\n")
+    if accion.lower()=='s':
         captura = pyautogui.screenshot(region=tupla_zona)
         captura.show()
-
-
+    print(f"Zona medida= {tupla_zona}\n")
+    accion = input(f"Quiere guardar las coordenadas de la zona marcada? s/n \n")
+    if accion.lower()=='s':
+        guardar(zona)
 # punto = tomar_punto()
 # if punto!= None:
 #     etiqueta = input("\nIngrese un nombre para etiquetar el punto a guardar ")
