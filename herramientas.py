@@ -48,15 +48,25 @@ def tomar_punto():
         listener.join()
     return (pyautogui.position())
 
-def guardar(zona):
+def guardar(cordenadas):
     fila={}
     nombre=input(f"Ingrese un nombre para guardar las coordenadas\n")
-    descripcion=(f"Ingrese una descripcion (opcional)\n")
-    fila[]
-    fila['x']=zona['x']
-
+    descripcion=input(f"Ingrese una descripcion. Opcional\n")
+    fila["nombre"]=nombre
+    fila["descripcion"]=descripcion
+    fila["x"]=cordenadas["x"]
+    fila["y"]=cordenadas["y"]
+    if len(cordenadas)==4:
+        fila["ancho"]=cordenadas["ancho"]
+        fila["alto"]=cordenadas["alto"]
+    else:
+        fila["ancho"]=""
+        fila["alto"]=""
+    columnas=["nombre", "descripcion", "x", "y", "ancho", "alto"]
     with open ("datos.csv", 'a') as archivo:
-        csv_writer=csv.writer(archivo)
+        csv_writer=csv.DictWriter(archivo, fieldnames=columnas)
+        csv_writer.writerow(fila)
+
 def guardar_zona():
     zona=medir_zona()
     tupla_zona= zona['x'], zona['y'], zona['ancho'], zona['alto']
