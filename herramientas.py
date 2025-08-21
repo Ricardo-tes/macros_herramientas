@@ -1,5 +1,5 @@
 import pyautogui
-import shelve
+import csv
 #from PIL import Image
 from pynput.keyboard import Key, Listener
 
@@ -48,8 +48,15 @@ def tomar_punto():
         listener.join()
     return (pyautogui.position())
 
-def guardar():
-    with open
+def guardar(zona):
+    fila={}
+    nombre=input(f"Ingrese un nombre para guardar las coordenadas\n")
+    descripcion=(f"Ingrese una descripcion (opcional)\n")
+    fila[]
+    fila['x']=zona['x']
+
+    with open ("datos.csv", 'a') as archivo:
+        csv_writer=csv.writer(archivo)
 def guardar_zona():
     zona=medir_zona()
     tupla_zona= zona['x'], zona['y'], zona['ancho'], zona['alto']
