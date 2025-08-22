@@ -1,30 +1,30 @@
 import pyautogui
 from time import sleep
-import csv
 # Este programa es una macro que abre el navegador...
 
-AREA_POSTULACIONES = (806, 171, 854, 857) 
-#Sector de la pantalla donde se realizar
-AREA_ANUNCIOS = (334, 297, 533, 746)
 
-#Entra a la página computrabajo, comprueba que esté logueado y si no lo está se loguea
-def entrar():
-    
-    pyautogui.click(249, 1054)
+
+def iniciar():
+#Entra a la página computrabajo, comprueba que esté logueado y si no lo está se loguea    
+    nombre_pagina = "computrabajo.com.ar"
+    browser = (203, 1060)
+    barra_de_navegacion = (162, 61)
+    nombre_de_usuario = "marcadores/usuario.png" 
+    sector_de_usuario = (1049, 89, 851, 70)
+    loguearse = (1629, 200)
+    pyautogui.click(browser) #Abre el browser
     sleep(5)
-    pyautogui.click(164, 63)
-    pyautogui.write("computrabajo.com.ar")
+    pyautogui.click(barra_de_navegacion) #Hace click en la barra de navegacion
+    pyautogui.write(nombre_pagina) #Escribe la direccion de la página
     pyautogui.press('enter')
     sleep(10)
-    #Busca si en la página de inicio está el nombre del usuario 
-     #La ausencia del nombre de usuario indica que hay que loguearse
-    if chequear("inicio.png", (1049, 89, 851, 70)):
+    if chequear(nombre_de_usuario, sector_de_usuario): #Busca si en la página de inicio está el nombre del usuario, si no está hay que loguearse
         print("Logueado")
     else:   
         print("\nNo esta logueado. Logueando")
-        pyautogui.click(1629, 200)
+        pyautogui.click(loguearse) #Hace click en el acceso rapido para loguearse con el mail
         sleep(10)
-        if chequear("inicio.png", (1049, 89, 851, 70)):#Revisa si el intento de logueo fue exitoso
+        if chequear(nombre_de_usuario, sector_de_usuario):#Revisa si el intento de logueo fue exitoso
             print("\nLogueado")
         else:
             print("\nFalló intento de logueo")
@@ -72,15 +72,15 @@ def busqueda_general(trabajo, lugar):
     sleep(10)
 
 
-def preguntas():
+def preguntas(sector_postulaciones):
 #Esta función es llamada cuando el anuncio pide responder preguntas adicionales, la macro marcara el anuncio como favorito
     print("Llegamos aqui")
-    foco=pyautogui.locateCenterOnScreen("preguntas.png", region=AREA_POSTULACIONES, confidence=0.9)
+    foco=pyautogui.locateCenterOnScreen("marcadores/preguntas.png", region=sector_postulaciones, confidence=0.9)
     pyautogui.click(foco) #hace foco en el area de postulaciones
     buscar=True
     while(buscar):
         try:
-            volver=pyautogui.locateCenterOnScreen("volver.png", region=AREA_POSTULACIONES, confidence=0.9)
+            volver=pyautogui.locateCenterOnScreen("volver.png", region=sector_postulaciones, confidence=0.9)
         except:
             pyautogui.press("pagedown")
             sleep(5)
@@ -89,29 +89,29 @@ def preguntas():
     pyautogui.click(volver)
     sleep(5)
     try:
-        clickear=pyautogui.locateCenterOnScreen("favorito.png", region=AREA_POSTULACIONES, confidence=0.9)
+        clickear=pyautogui.locateCenterOnScreen("favorito.png", region=sector_postulaciones, confidence=0.9)
         pyautogui.click(clickear)
     except:
         print("Me voy a volver Chango")
     sleep(5)
 
 
-def postularse(anuncios):
+def postularse(anuncios, sector_postulaciones):
     postulado_exitosamente=0
     ya_postulado=0
     responder_preguntas=0
     for encontrado in anuncios:
         pyautogui.click(encontrado)
         sleep(5)
-        if not chequear("yaFavorito.png", AREA_POSTULACIONES):
+        if not chequear("yaFavorito.png", sector_postulaciones):
             try:
-                clickear=pyautogui.locateCenterOnScreen("postularme.png", region=AREA_POSTULACIONES, confidence=0.9)
+                clickear=pyautogui.locateCenterOnScreen("postularme.png", region=sector_postulaciones, confidence=0.9)
                 pyautogui.click(clickear)
                 sleep(5)
-                if chequear("preguntas.png", AREA_POSTULACIONES):
+                if chequear("marcadores/preguntas.png", sector_postulaciones):
                     responder_preguntas+=1
-                    preguntas()
-                elif ("yaPostulado.png", AREA_POSTULACIONES):
+                    preguntas(sector_postulaciones)
+                elif ("yaPostulado.png", sector_postulaciones):
                     ya_postulado+=1
                 else:
                     postulado_exitosamente+=1
@@ -124,21 +124,25 @@ def postularse(anuncios):
 
 
 
-
-sleep(5)
-entrar()
-busqueda_general("", "capital federal")
-palabras="operario.png", "deposito.png"
-for _ in range(10):
-    anuncios = buscar_anuncios(palabras, AREA_ANUNCIOS)
-    print(f"Número de anuncios encontrados: {len (anuncios)}")
-    stats = postularse(anuncios)
-    print(f"{stats}")
+def main():
+    sector_postulaciones = (806, 171, 854, 857)
+    sector_anuncios = (334, 297, 533, 746)
+    trabajo=""
+    lugar="capital federal"
     sleep(5)
-    try:
-        pasar_pagina=pyautogui.locateCenterOnScreen("siguiente.png", region=AREA_ANUNCIOS, confidence=0.9)
-        pyautogui.click(pasar_pagina)
-    except:
-        pyautogui.click(572, 261)
-        sleep(2)
-        pyautogui.press("pagedown")
+    iniciar()
+    busqueda_general(trabajo, lugar)
+    palabras="palabras_clave/operario.png", "palabras_clave/deposito.png"
+    for _ in range(10):
+        anuncios = buscar_anuncios(palabras, sector_anuncios)
+        print(f"Número de anuncios encontrados: {len (anuncios)}")
+        stats = postularse(anuncios, sector_postulaciones)
+        print(f"{stats}")
+        sleep(5)
+        try:
+            pasar_pagina=pyautogui.locateCenterOnScreen("siguiente.png", region=sector_anuncios, confidence=0.9)
+            pyautogui.click(pasar_pagina)
+        except:
+            pyautogui.click(572, 261)
+            sleep(2)
+            pyautogui.press("pagedown")

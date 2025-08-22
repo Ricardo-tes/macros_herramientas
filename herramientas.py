@@ -72,14 +72,14 @@ def guardar_zona():
     if accion.lower()=='s':
         captura = pyautogui.screenshot(region=tupla_zona)
         captura.show()
-    print(f"Zona medida= {tupla_zona}\n")
+    print(f"Zona medida= {tupla_zona}\n Resolucion: {zona['resolucion']}")
     accion = input(f"Quiere guardar las coordenadas de la zona marcada? s/n \n")
     if accion.lower()=='s':
         guardar(zona)
  
 def guardar_punto():
     punto = medir_punto()
-    print(f"El punto medido es ({punto['x']}, {punto['y']})\n")
+    print(f"El punto medido es ({punto['x']}, {punto['y']})\n Resolucion: {punto['resolucion']}\n")
     accion=input(f"Quiere guardar el punto? s/n\n")
     if accion.lower()=='s':
         guardar(punto)
