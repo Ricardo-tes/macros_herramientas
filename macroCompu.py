@@ -10,7 +10,7 @@ def iniciar():
     browser = (203, 1060)
     barra_de_navegacion = (162, 61)
     nombre_de_usuario = "marcadores/usuario.png" 
-    sector_de_usuario = (1049, 89, 851, 70)
+    sector_de_usuario = (1225, 94, 334, 61)
     loguearse = (1629, 200)
     pyautogui.click(browser) #Abre el browser
     sleep(5)
@@ -37,7 +37,7 @@ def buscar_anuncios(palabras, sector):
     posiciones=[]
     for palabra in palabras:
         try:
-            anuncios=pyautogui.locateAllOnScreen(palabra, confidence=0.9, region=sector)
+            anuncios=pyautogui.locateAllOnScreen(palabra, region=sector)
             for anuncio in anuncios:
                 posiciones.append(pyautogui.center(anuncio))
         except:
@@ -80,7 +80,7 @@ def preguntas(sector_postulaciones):
     buscar=True
     while(buscar):
         try:
-            volver=pyautogui.locateCenterOnScreen("volver.png", region=sector_postulaciones, confidence=0.9)
+            volver=pyautogui.locateCenterOnScreen("marcadores/volver.png", region=sector_postulaciones, confidence=0.9)
         except:
             pyautogui.press("pagedown")
             sleep(5)
@@ -89,7 +89,7 @@ def preguntas(sector_postulaciones):
     pyautogui.click(volver)
     sleep(5)
     try:
-        clickear=pyautogui.locateCenterOnScreen("favorito.png", region=sector_postulaciones, confidence=0.9)
+        clickear=pyautogui.locateCenterOnScreen("marcadores/favorito.png", region=sector_postulaciones, confidence=0.9)
         pyautogui.click(clickear)
     except:
         print("Me voy a volver Chango")
@@ -103,15 +103,15 @@ def postularse(anuncios, sector_postulaciones):
     for encontrado in anuncios:
         pyautogui.click(encontrado)
         sleep(5)
-        if not chequear("yaFavorito.png", sector_postulaciones):
+        if not chequear("marcadores/ya_favorito.png", sector_postulaciones):
             try:
-                clickear=pyautogui.locateCenterOnScreen("postularme.png", region=sector_postulaciones, confidence=0.9)
+                clickear=pyautogui.locateCenterOnScreen("marcadores/postularme.png", region=sector_postulaciones, confidence=0.9)
                 pyautogui.click(clickear)
                 sleep(5)
                 if chequear("marcadores/preguntas.png", sector_postulaciones):
                     responder_preguntas+=1
                     preguntas(sector_postulaciones)
-                elif ("yaPostulado.png", sector_postulaciones):
+                elif ("marcadores/ya_postulado.png", sector_postulaciones):
                     ya_postulado+=1
                 else:
                     postulado_exitosamente+=1
@@ -125,14 +125,14 @@ def postularse(anuncios, sector_postulaciones):
 
 
 def main():
-    sector_postulaciones = (806, 171, 854, 857)
-    sector_anuncios = (334, 297, 533, 746)
+    sector_postulaciones = (865, 241, 822, 813)
+    sector_anuncios = (327, 140, 547, 919)
     trabajo=""
     lugar="capital federal"
     sleep(5)
     iniciar()
     busqueda_general(trabajo, lugar)
-    palabras="palabras_clave/operario.png", "palabras_clave/deposito.png"
+    palabras=["palabras_clave/operario.png", "palabras_clave/deposito.png"]
     for _ in range(10):
         anuncios = buscar_anuncios(palabras, sector_anuncios)
         print(f"Número de anuncios encontrados: {len (anuncios)}")
@@ -140,9 +140,11 @@ def main():
         print(f"{stats}")
         sleep(5)
         try:
-            pasar_pagina=pyautogui.locateCenterOnScreen("siguiente.png", region=sector_anuncios, confidence=0.9)
+            pasar_pagina=pyautogui.locateCenterOnScreen("marcadores/siguiente.png", region=sector_anuncios, confidence=0.9)
             pyautogui.click(pasar_pagina)
         except:
             pyautogui.click(572, 261)
             sleep(2)
             pyautogui.press("pagedown")
+
+main()
