@@ -37,20 +37,13 @@ def buscar_anuncios(palabras, sector):
     posiciones=[]
     for palabra in palabras:
         try:
-            anuncios=pyautogui.locateAllOnScreen(palabra, region=sector)
+            anuncios=pyautogui.locateAllOnScreen(palabra, region=sector, confidence=0.9)
             for anuncio in anuncios:
                 posiciones.append(pyautogui.center(anuncio))
         except:
             pass
     return posiciones
     
-
-
-
-
-
-
-
 
 
 #Toma como argumentos el nombre de un archivo png y un sector de la pantalla. 
@@ -130,14 +123,14 @@ def postularse(anuncios, sector_postulaciones):
 def main():
     sector_postulaciones = (865, 241, 822, 813)
     sector_anuncios = (327, 140, 547, 919)
-    trabajo=""
+    trabajo="soporte"
     lugar="capital federal"
     sleep(5)
     iniciar()
     busqueda_general(trabajo, lugar)
     palabras=["palabras_clave/qa.png", "palabras_clave/soporte.png"]
     paginas=0
-    while paginas<5:
+    while paginas<2:
         anuncios = buscar_anuncios(palabras, sector_anuncios)
         print(f"Número de anuncios encontrados: {len (anuncios)}")
         postularse(anuncios, sector_postulaciones)
