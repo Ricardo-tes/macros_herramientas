@@ -64,6 +64,7 @@ def chequear(imagen, sector):
         return True
 
 def busqueda_general(trabajo, lugar):
+    print(f"\nBucar anuncios de {trabajo} en {lugar}\n")
     pyautogui.click(960, 422)
     pyautogui.write(lugar)
     pyautogui.click(690, 417)
@@ -74,7 +75,6 @@ def busqueda_general(trabajo, lugar):
 
 def preguntas(sector_postulaciones):
 #Esta función es llamada cuando el anuncio pide responder preguntas adicionales, la macro marcara el anuncio como favorito
-    print("Llegamos aqui")
     foco=pyautogui.locateCenterOnScreen("marcadores/preguntas.png", region=sector_postulaciones, confidence=0.9)
     pyautogui.click(foco) #hace foco en el area de postulaciones
     buscar=True
@@ -111,16 +111,19 @@ def postularse(anuncios, sector_postulaciones):
                 if chequear("marcadores/preguntas.png", sector_postulaciones):
                     responder_preguntas+=1
                     preguntas(sector_postulaciones)
+                    print("\nGuardar en favoritos")
                 elif ("marcadores/ya_postulado.png", sector_postulaciones):
+                    print("\nYa estaba postulado")
                     ya_postulado+=1
                 else:
+                    print("\nPostulado_exitosamente")
                     postulado_exitosamente+=1
                 
             except:
                 print("Falló postulacion")
         else:
             print("Estaba guardado en favoritos")
-    return (postulado_exitosamente, ya_postulado, responder_preguntas)
+    return 
 
 
 
@@ -132,19 +135,21 @@ def main():
     sleep(5)
     iniciar()
     busqueda_general(trabajo, lugar)
-    palabras=["palabras_clave/operario.png", "palabras_clave/deposito.png"]
-    for _ in range(10):
+    palabras=["palabras_clave/qa.png", "palabras_clave/soporte.png"]
+    paginas=0
+    while paginas<5:
         anuncios = buscar_anuncios(palabras, sector_anuncios)
         print(f"Número de anuncios encontrados: {len (anuncios)}")
-        stats = postularse(anuncios, sector_postulaciones)
-        print(f"{stats}")
+        postularse(anuncios, sector_postulaciones)
         sleep(5)
         try:
             pasar_pagina=pyautogui.locateCenterOnScreen("marcadores/siguiente.png", region=sector_anuncios, confidence=0.9)
             pyautogui.click(pasar_pagina)
+            paginas+=1
         except:
             pyautogui.click(572, 261)
             sleep(2)
             pyautogui.press("pagedown")
 
-main()
+if __name__=="__main__":
+    main()
